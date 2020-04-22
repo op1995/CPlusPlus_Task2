@@ -88,39 +88,74 @@ string relation2(string inputName, Node* current){
 
 
 string Tree::find(string inputRelation){
+    if(inputRelation.size()<6) throw invalid_argument("Input string is too short to be valid!\n");
+
+    string test = inputRelation.substr(0,1); //check if the first character of the input string is valid
+    if(!(test.compare("f")==0) && !(test.compare("m")==0) && !(test.compare("g")==0)) {throw invalid_argument("Input string invalid!\n");}
+
     if(!this->root.dad && !this->root.mom){throw invalid_argument("Tree only has root. No relations will be in it, so there isn't anything to find.\n");}
+    
     if(inputRelation.compare("father")==0){
         if(!this->root.dad) throw invalid_argument("No such relation in the tree!\n");
         else return this->root.dad->name+"\n";
     }
+
     if(inputRelation.compare("mother")==0){
         if(!this->root.mom) throw invalid_argument("No such relation in the tree!\n");
         else return this->root.mom->name+"\n";
     }
+
     if(inputRelation.compare("grandfather")==0){
         if(this->root.dad && this->root.dad->dad) {return this->root.dad->dad->name+"\n";}
         else if (this->root.mom && this->root.mom->dad) {return this->root.mom->dad->name+"\n";}
         else throw invalid_argument("No such relation in the tree!\n");
     }
+
     if(inputRelation.compare("grandmother")==0){
         if(this->root.dad && this->root.dad->mom) {return this->root.dad->mom->name+"\n";}
         else if (this->root.mom && this->root.mom->mom) {return this->root.mom->mom->name+"\n";}
         else throw invalid_argument("No such relation in the tree!\n");
     }
 
+    //getting here means we didn't look for father, mother, grandfather or grandmother
+    //so the input should start with "great-". If it doesn't, throw an error.
+    //this is needed here as well as in the find2 function, as the first 6 characters might be invalid, but the rest is valid.
+    if(inputRelation.substr(0,6).compare("great-")!=0) throw invalid_argument("Invalid input!\n");
 
+    string answer = "none";
+    if(this->root.dad->dad) {answer = find2(inputRelation.substr(6), this->root.dad->dad);} //substring of 6 is to get rid of "great-" part
+    if (answer.compare("invalid!")!=0 && answer.compare("none")!=0 && this->root.dad->mom) {answer = find2(inputRelation.substr(6), this->root.dad->mom);}
+    if (answer.compare("invalid!")!=0 && answer.compare("none")!=0 && this->root.mom->dad) {answer = find2(inputRelation.substr(6), this->root.mom->dad);}
+    if (answer.compare("invalid!")!=0 && answer.compare("none")!=0 && this->root.mom->mom) {answer = find2(inputRelation.substr(6), this->root.mom->mom);}
 
+    if(answer.compare("invalid!")==0){throw invalid_argument("Invalid input!\n");} //invalid! is an indicatior of invalid part found in the string
+    if(answer.compare("none")!=0){return answer + "\n";} // if it isn't "invalid!" or "none", answer was found. Return it.
+    else {throw invalid_argument("No such relation in the tree!\n");}//none of the above -> wasn't found. throw error.
 
+    
 
-    // Node* answerNode = find2(inputName, &this->root);
-    // if(answerNode) return answerNode->name;
-    // else throw invalid_argument("No such relation in the tree!");
-
-    return "temp2\n"; //to have something to return, for any case. Not including this caused problems in previous projects.
+    // return "temp2\n"; //to have something to return, for any case. Not including this caused problems in previous projects.
 
 };
 
 string Tree::find2(string inputRelation, Node* origin){
+    if(inputRelation.substr(0,6).compare("great-")==0){ //if "great" is still within the inputed string, it is needed to go up another level in the tree
+        string answer = "none";
+        if(origin->dad) answer = find2(inputRelation.substr(6), origin->dad);
+        if(answer.compare("none")==0 && origin->mom) answer = find2(inputRelation.substr(6), origin->mom);
+        return answer;
+    }
+    
+    //getting here means the begining of the string isn't "great-".
+    //if the string doesn't start with "great-" and it isn't grandfather or grandmother, it is invalid. returning "invalid!" will indicate to throw an error.
+    if(inputRelation.compare("grandfather")!=0 && inputRelation.compare("grandmother")!=0) {return "invalid!";}
+    
+    else{//valid string and no more "great-" in the string. check if we looked for grandfather and origin is male, or grandmother and origin is female
+        if(inputRelation.compare("grandfather")==0 && origin->male) return origin->name;
+        if(inputRelation.compare("grandmother")==0 && !origin->male) return origin->name;
+        return "none";
+    }
+
     
 }
 
