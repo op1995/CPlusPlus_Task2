@@ -48,10 +48,14 @@ class family::Tree{
     string relation2(string inputName, Node* current);
     
     string find(string inputRelation);
-    string Tree::find2(string inputRelation, Node* origin);
+    string find2(string inputRelation, Node* origin);
+
     void remove(string inputName);
+    bool remove2(string inputName, Node* baseNode);
+
 
     Node* search(Node* currentNode, string input);
+    
 
     Node root;
 

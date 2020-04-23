@@ -28,9 +28,12 @@ int main() {
 	cout << T.relation("Terah") << endl;  // prints "great-great-grandfather"
 	cout << T.relation("xyz") << endl;  // prints "unrelated"
 	cout << T.relation("Yosef") << endl;  // prints "me"
-
+	// cout << "hello" << endl;
 	cout << T.find("mother") << endl;  // prints "Rachel"
+	// cout << "hello2" << endl;
 	cout << T.find("great-great-grandfather") << endl;  // prints "Terah"
+	// cout << "hello3" << endl;
+
 	try {
 		cout << T.find("uncle") << endl;  // throws an exception
 	} catch (const exception& ex) {
