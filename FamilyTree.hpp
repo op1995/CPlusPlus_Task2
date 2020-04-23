@@ -43,7 +43,9 @@ class family::Tree{
     public:
     Tree& addFather(string son, string newDad);
     Tree& addMother(string son, string newMom);
+
     void display();
+    void display2(Node *current, string tabs);
     string relation(string inputName);
     string relation2(string inputName, Node* current);
     

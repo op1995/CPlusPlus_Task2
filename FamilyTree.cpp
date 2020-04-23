@@ -44,7 +44,20 @@ Tree& Tree::addMother(string son, string newMom){
 
 };
 
-void Tree::display(){};
+	void Tree::display2(Node *current, string tabs){
+		
+		if(!current)
+			return;
+
+        if(current->dad){display2(current->dad, tabs+"\t");};
+        cout << tabs << current->name << endl;
+        if(current->mom){display2(current->mom, tabs+"\t");};
+	}
+
+
+	void Tree::display(){
+		display2(&this->root, "");
+	}
 
 
 string Tree::relation(string inputName){
@@ -55,18 +68,19 @@ string Tree::relation(string inputName){
     if(root.dad && root.dad->name.compare(inputName)==0){return "father";}//father case
     if(root.mom && root.mom->name.compare(inputName)==0){return "mother";}//mother case
 
-    if(!root.dad->dad && !root.dad->dad && !root.mom->dad && !root.mom->mom){return "unrelated";} //if no further family exists, end it all
+    //if no further family exists, end it all
+    if( (root.dad && !root.dad->dad) && (root.dad && !root.dad->dad) && (root.mom && !root.mom->dad) && (root.mom && !root.mom->mom)){return "unrelated";}
 
-    if(root.dad->dad && root.dad->dad->name.compare(inputName)==0){return "grandfather";}
-    if(root.dad->mom && root.dad->mom->name.compare(inputName)==0){return "grandmother";}
-    if(root.mom->dad && root.mom->dad->name.compare(inputName)==0){return "grandfather";}
-    if(root.mom->mom && root.mom->mom->name.compare(inputName)==0){return "grandmother";} //private cases of grandfather and grandmother
+    if( (root.dad && root.dad->dad) && root.dad->dad->name.compare(inputName)==0){return "grandfather";}
+    if( (root.dad && root.dad->mom) && root.dad->mom->name.compare(inputName)==0){return "grandmother";}
+    if( (root.mom && root.mom->dad) && root.mom->dad->name.compare(inputName)==0){return "grandfather";}
+    if( (root.mom && root.mom->mom) && root.mom->mom->name.compare(inputName)==0){return "grandmother";} //private cases of grandfather and grandmother
 
     string temp = "unrelated"; //now check up the tree for each ancestor
-    if(root.dad->dad) {temp = relation2(inputName, root.dad->dad);}
-    if(temp.compare("unrelated")==0 && root.dad->mom){temp = relation2(inputName, root.dad->mom);}
-    if(temp.compare("unrelated")==0 && root.mom->dad){temp = relation2(inputName, root.mom->dad);}
-    if(temp.compare("unrelated")==0 && root.mom->mom){temp = relation2(inputName, root.mom->mom);}
+    if(root.dad && root.dad->dad) {temp = relation2(inputName, root.dad->dad);}
+    if(temp.compare("unrelated")==0 && root.dad && root.dad->mom){temp = relation2(inputName, root.dad->mom);}
+    if(temp.compare("unrelated")==0 && root.mom && root.mom->dad){temp = relation2(inputName, root.mom->dad);}
+    if(temp.compare("unrelated")==0 && root.mom && root.mom->mom){temp = relation2(inputName, root.mom->mom);}
 
     if(temp.compare("unrelated")!=0) return "great-" + temp;
     else return "unrelated";
@@ -88,6 +102,7 @@ string Tree::relation2(string inputName, Node* current){
 
 
 string Tree::find(string inputRelation){
+    if(inputRelation.compare("me")==0) return this->root.name;
     if(inputRelation.size()<6) throw invalid_argument("Input string is too short to be valid!\n");
 
     string test = inputRelation.substr(0,1); //check if the first character of the input string is valid

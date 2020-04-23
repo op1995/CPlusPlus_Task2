@@ -13,6 +13,9 @@ run: test
 test: TestRunner.o Test_ariel.o Test_hila.o $(STUDENT_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o test
 
+test2: TestCounter.o Test.o $(STUDENT_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o test
+
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 

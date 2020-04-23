@@ -28,6 +28,9 @@ TEST_CASE("Yosef Tree case") {
 	T.addMother("Rachel", "Ruti");
 	T.addFather("Isaac", "Avraham");
 	T.addMother("Isaac", "Ruti");
+
+	T.display();
+
 	CHECK_THROWS(T.addFather("Isaac", "Israel"));  // duplicate father
 	CHECK_THROWS(T.addMother("Isaac", "Ruti"));    // duplicate mother
 	T.addFather("Avraham", "Yosi");
